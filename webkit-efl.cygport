@@ -1,0 +1,27 @@
+inherit cmake
+
+NAME="webkit-efl"
+VERSION=0.1.0.98964
+RELEASE=1
+CATEGORY="X11"
+SUMMARY="Enlightenment WebKit library"
+DESCRIPTION="Also known as WebKit-EFL, EWebKit is the port of WebKit to
+Enlightenment technologies. In order to keep it general and as independent as
+possible it uses (directly) a small subset of EFL libraries: Evas, Ecore and
+Edje."
+HOMEPAGE="http://www.enlightenment.org/"
+SRC_URI="http://packages.profusion.mobi/webkit-efl/webkit-efl-svn-r${PV[4]}.tar.bz2"
+SRC_DIR="webkit-efl-svn-r${PV[4]}/Source"
+PATCH_URI="01-os-cygwin.patch"
+
+PKG_NAMES="libewebkit0 libewebkit-devel"
+libewebkit0_CONTENTS="usr/bin/cygewebkit-0.dll usr/share/"
+libewebkit_devel_CONTENTS="usr/include/ usr/lib/"
+
+RESTRICT="debuginfo"  # too large
+
+CFLAGS+=" -DNDEBUG"
+CXXFLAGS+=" -DNDEBUG"
+CYGCMAKE_ARGS="-DPORT=Efl" # -DENABLE_BATTERY_STATUS=OFF -DENABLE_GAMEPAD=OFF -DENABLE_NETWORK_INFO=OFF"
+
+DOCS="Source/*/LICENSE*"
