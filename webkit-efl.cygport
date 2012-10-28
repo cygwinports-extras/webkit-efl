@@ -2,7 +2,7 @@ inherit cmake
 
 NAME="webkit-efl"
 VERSION=0.1.0.98964
-RELEASE=1
+RELEASE=2
 CATEGORY="X11"
 SUMMARY="Enlightenment WebKit library"
 DESCRIPTION="Also known as WebKit-EFL, EWebKit is the port of WebKit to
