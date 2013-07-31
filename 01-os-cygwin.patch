@@ -1,21 +1,21 @@
---- origsrc/webkit-efl-svn-r98964/Source/JavaScriptCore/API/JSStringRef.h	2011-11-01 10:39:01.000000000 -0500
-+++ src/webkit-efl-svn-r98964/Source/JavaScriptCore/API/JSStringRef.h	2012-09-11 19:27:36.000000000 -0500
+--- origsrc/webkit-efl-svn-r127150/Source/JavaScriptCore/API/JSStringRef.h	2012-08-30 13:44:46.000000000 -0500
++++ src/webkit-efl-svn-r127150/Source/JavaScriptCore/API/JSStringRef.h	2013-07-30 02:08:48.459015000 -0500
 @@ -37,7 +37,7 @@
  extern "C" {
  #endif
  
--#if !defined(WIN32) && !defined(_WIN32) && !defined(__WINSCW__) \
+-#if !defined(WIN32) && !defined(_WIN32) \
 +#if !defined(WIN32) && !defined(_WIN32) && !defined(__CYGWIN__) \
      && !((defined(__CC_ARM) || defined(__ARMCC__)) && !defined(__linux__)) /* RVCT */
  /*!
  @typedef JSChar
---- origsrc/webkit-efl-svn-r98964/Source/JavaScriptCore/icu/unicode/platform.h	2011-11-01 10:39:01.000000000 -0500
-+++ src/webkit-efl-svn-r98964/Source/JavaScriptCore/icu/unicode/platform.h	2012-09-11 19:27:36.000000000 -0500
+--- origsrc/webkit-efl-svn-r127150/Source/JavaScriptCore/icu/unicode/platform.h	2012-08-30 13:44:46.000000000 -0500
++++ src/webkit-efl-svn-r127150/Source/JavaScriptCore/icu/unicode/platform.h	2013-07-30 02:09:25.046107700 -0500
 @@ -210,7 +210,11 @@ typedef unsigned int uint32_t;
  /*===========================================================================*/
  
  #define U_HAVE_WCHAR_H      1
-+#if defined(__CYGWIN__)
++#ifdef __CYGWIN__
 +#define U_SIZEOF_WCHAR_T    2
 +#else
  #define U_SIZEOF_WCHAR_T    4
@@ -23,8 +23,8 @@
  
  #define U_HAVE_WCSCPY       1
  
---- origsrc/webkit-efl-svn-r98964/Source/JavaScriptCore/icu/unicode/umachine.h	2011-11-01 10:39:01.000000000 -0500
-+++ src/webkit-efl-svn-r98964/Source/JavaScriptCore/icu/unicode/umachine.h	2012-09-11 19:27:36.000000000 -0500
+--- origsrc/webkit-efl-svn-r127150/Source/JavaScriptCore/icu/unicode/umachine.h	2012-08-30 13:44:46.000000000 -0500
++++ src/webkit-efl-svn-r127150/Source/JavaScriptCore/icu/unicode/umachine.h	2013-07-30 02:10:04.974391500 -0500
 @@ -298,7 +298,7 @@ typedef int8_t UBool;
  #       if (U_SIZEOF_WCHAR_T==4)
  #           define U_WCHAR_IS_UTF32
@@ -34,20 +34,9 @@
  #       define U_WCHAR_IS_UTF16    
  #   endif
  #endif
---- origsrc/webkit-efl-svn-r98964/Source/JavaScriptCore/jit/JITStubs.cpp	2011-11-01 10:39:01.000000000 -0500
-+++ src/webkit-efl-svn-r98964/Source/JavaScriptCore/jit/JITStubs.cpp	2012-09-11 19:28:57.369532000 -0500
-@@ -68,7 +68,7 @@ using namespace std;
- 
- namespace JSC {
- 
--#if OS(DARWIN) || (OS(WINDOWS) && CPU(X86))
-+#if OS(DARWIN) || ((OS(WINDOWS) || OS(CYGWIN)) && CPU(X86))
- #define SYMBOL_STRING(name) "_" #name
- #else
- #define SYMBOL_STRING(name) #name
---- origsrc/webkit-efl-svn-r98964/Source/JavaScriptCore/jit/JITStubs.h	2011-11-01 10:39:01.000000000 -0500
-+++ src/webkit-efl-svn-r98964/Source/JavaScriptCore/jit/JITStubs.h	2012-09-11 19:27:36.000000000 -0500
-@@ -116,10 +116,10 @@ namespace JSC {
+--- origsrc/webkit-efl-svn-r127150/Source/JavaScriptCore/jit/JITStubs.h	2012-08-30 13:44:46.000000000 -0500
++++ src/webkit-efl-svn-r127150/Source/JavaScriptCore/jit/JITStubs.h	2013-07-30 02:18:41.817953200 -0500
+@@ -119,10 +119,10 @@ namespace JSC {
          ReturnAddressPtr* returnAddressSlot() { return reinterpret_cast<ReturnAddressPtr*>(this) - 1; }
      };
  #elif CPU(X86)
@@ -60,7 +49,7 @@
      struct JITStackFrame {
          void* reserved; // Unused
          JITStubArg args[6];
-@@ -143,9 +143,9 @@ namespace JSC {
+@@ -146,9 +146,9 @@ namespace JSC {
          // When JIT code makes a call, it pushes its return address just below the rest of the stack.
          ReturnAddressPtr* returnAddressSlot() { return reinterpret_cast<ReturnAddressPtr*>(this) - 1; }
      };
@@ -72,28 +61,28 @@
  #elif CPU(ARM_THUMB2)
      struct JITStackFrame {
          JITStubArg reserved; // Unused
---- origsrc/webkit-efl-svn-r98964/Source/JavaScriptCore/jit/ThunkGenerators.cpp	2011-11-01 10:39:01.000000000 -0500
-+++ src/webkit-efl-svn-r98964/Source/JavaScriptCore/jit/ThunkGenerators.cpp	2012-09-12 03:23:13.066467800 -0500
-@@ -111,7 +111,7 @@ MacroAssemblerCodeRef sqrtThunkGenerator
-     return jit.finalize(*globalData, globalData->jitStubs->ctiNativeCall());
- }
+--- origsrc/webkit-efl-svn-r127150/Source/WTF/wtf/InlineASM.h	2012-08-30 13:44:46.000000000 -0500
++++ src/webkit-efl-svn-r127150/Source/WTF/wtf/InlineASM.h	2013-07-30 02:21:01.637950500 -0500
+@@ -30,7 +30,7 @@
+ 
+ /* asm directive helpers */ 
  
 -#if OS(DARWIN) || (OS(WINDOWS) && CPU(X86))
 +#if OS(DARWIN) || ((OS(WINDOWS) || OS(CYGWIN)) && CPU(X86))
  #define SYMBOL_STRING(name) "_" #name
  #else
  #define SYMBOL_STRING(name) #name
-@@ -121,7 +121,7 @@ MacroAssemblerCodeRef sqrtThunkGenerator
- #define SYMBOL_STRING_RELOCATION(name) #name "@plt"
- #elif OS(DARWIN) || (CPU(X86_64) && COMPILER(MINGW) && !GCC_VERSION_AT_LEAST(4, 5, 0))
- #define SYMBOL_STRING_RELOCATION(name) "_" #name
+@@ -44,7 +44,7 @@
+ 
+ #if (OS(LINUX) || OS(FREEBSD)) && CPU(X86_64)
+ #define GLOBAL_REFERENCE(name) #name "@plt"
 -#elif CPU(X86) && COMPILER(MINGW)
 +#elif CPU(X86) && (COMPILER(MINGW) || OS(CYGWIN))
- #define SYMBOL_STRING_RELOCATION(name) "@" #name "@4"
+ #define GLOBAL_REFERENCE(name) "@" #name "@4"
  #else
- #define SYMBOL_STRING_RELOCATION(name) #name
---- origsrc/webkit-efl-svn-r98964/Source/JavaScriptCore/wtf/PageAllocationAligned.cpp	2011-11-01 10:39:01.000000000 -0500
-+++ src/webkit-efl-svn-r98964/Source/JavaScriptCore/wtf/PageAllocationAligned.cpp	2012-09-12 13:52:00.307677100 -0500
+ #define GLOBAL_REFERENCE(name) SYMBOL_STRING(name)
+--- origsrc/webkit-efl-svn-r127150/Source/WTF/wtf/PageAllocationAligned.cpp	2012-08-30 13:44:46.000000000 -0500
++++ src/webkit-efl-svn-r127150/Source/WTF/wtf/PageAllocationAligned.cpp	2013-07-30 02:22:03.785505100 -0500
 @@ -50,7 +50,7 @@ PageAllocationAligned PageAllocationAlig
      vm_map(current_task(), &address, size, alignmentMask, flags, MEMORY_OBJECT_NULL, 0, FALSE, protection, PROT_READ | PROT_WRITE | PROT_EXEC, VM_INHERIT_DEFAULT);
      return PageAllocationAligned(reinterpret_cast<void*>(address), size);
@@ -103,9 +92,9 @@
  
      // Resererve with suffcient additional VM to correctly align.
      size_t reservationSize = size + alignmentDelta;
---- origsrc/webkit-efl-svn-r98964/Source/JavaScriptCore/wtf/Platform.h	2011-11-01 10:39:01.000000000 -0500
-+++ src/webkit-efl-svn-r98964/Source/JavaScriptCore/wtf/Platform.h	2012-09-11 19:27:36.000000000 -0500
-@@ -312,6 +312,11 @@
+--- origsrc/webkit-efl-svn-r127150/Source/WTF/wtf/Platform.h	2012-08-30 13:44:46.000000000 -0500
++++ src/webkit-efl-svn-r127150/Source/WTF/wtf/Platform.h	2013-07-30 02:17:08.352607300 -0500
+@@ -317,6 +317,11 @@
  #define WTF_OS_AIX 1
  #endif
  
@@ -117,24 +106,33 @@
  /* OS(DARWIN) - Any Darwin-based OS, including Mac OS X and iPhone OS */
  #ifdef __APPLE__
  #define WTF_OS_DARWIN 1
-@@ -389,6 +394,7 @@
+@@ -400,6 +405,7 @@
  /* OS(UNIX) - Any Unix-like system */
  #if   OS(AIX)              \
      || OS(ANDROID)          \
 +    || OS(CYGWIN)           \
      || OS(DARWIN)           \
      || OS(FREEBSD)          \
-     || OS(LINUX)            \
-@@ -640,6 +646,7 @@
+     || OS(HURD)             \
+@@ -685,6 +691,7 @@
+ #endif
  
- #if !OS(WINDOWS) && !OS(SOLARIS) && !OS(QNX) \
-     && !OS(RVCT) \
+ #if !OS(WINDOWS) && !OS(SOLARIS) \
 +    && !OS(CYGWIN) \
+     && !OS(RVCT) \
      && !OS(ANDROID)
  #define HAVE_TM_GMTOFF 1
- #define HAVE_TM_ZONE 1
---- origsrc/webkit-efl-svn-r98964/Source/JavaScriptCore/wtf/ThreadIdentifierDataPthreads.cpp	2011-11-01 10:39:01.000000000 -0500
-+++ src/webkit-efl-svn-r98964/Source/JavaScriptCore/wtf/ThreadIdentifierDataPthreads.cpp	2012-09-11 20:30:25.692643000 -0500
+@@ -878,7 +885,7 @@
+ #endif
+ 
+ /* JIT is not implemented for Windows 64-bit */
+-#if !defined(ENABLE_JIT) && OS(WINDOWS) && CPU(X86_64)
++#if !defined(ENABLE_JIT) && (OS(CYGWIN) || OS(WINDOWS)) && CPU(X86_64)
+ #define ENABLE_JIT 0
+ #endif
+ 
+--- origsrc/webkit-efl-svn-r127150/Source/WTF/wtf/ThreadIdentifierDataPthreads.cpp	2012-08-30 13:44:46.000000000 -0500
++++ src/webkit-efl-svn-r127150/Source/WTF/wtf/ThreadIdentifierDataPthreads.cpp	2013-07-30 02:22:33.306193600 -0500
 @@ -45,7 +45,7 @@
  
  namespace WTF {
@@ -142,15 +140,15 @@
 -pthread_key_t ThreadIdentifierData::m_key = PTHREAD_KEYS_MAX;
 +pthread_key_t ThreadIdentifierData::m_key;
  
- void clearPthreadHandleForIdentifier(ThreadIdentifier);
+ void threadDidExit(ThreadIdentifier);
  
---- origsrc/webkit-efl-svn-r98964/Source/WebCore/icu/unicode/platform.h	2011-11-01 10:39:01.000000000 -0500
-+++ src/webkit-efl-svn-r98964/Source/WebCore/icu/unicode/platform.h	2012-09-11 19:27:36.000000000 -0500
+--- origsrc/webkit-efl-svn-r127150/Source/WebCore/icu/unicode/platform.h	2012-08-30 13:44:47.000000000 -0500
++++ src/webkit-efl-svn-r127150/Source/WebCore/icu/unicode/platform.h	2013-07-30 02:12:47.237672400 -0500
 @@ -210,7 +210,11 @@ typedef unsigned int uint32_t;
  /*===========================================================================*/
  
  #define U_HAVE_WCHAR_H      1
-+#if defined(__CYGWIN__)
++#ifdef __CYGWIN__
 +#define U_SIZEOF_WCHAR_T    2
 +#else
  #define U_SIZEOF_WCHAR_T    4
@@ -158,8 +156,8 @@
  
  #define U_HAVE_WCSCPY       1
  
---- origsrc/webkit-efl-svn-r98964/Source/WebCore/icu/unicode/umachine.h	2011-11-01 10:39:01.000000000 -0500
-+++ src/webkit-efl-svn-r98964/Source/WebCore/icu/unicode/umachine.h	2012-09-11 19:27:36.000000000 -0500
+--- origsrc/webkit-efl-svn-r127150/Source/WebCore/icu/unicode/umachine.h	2012-08-30 13:44:47.000000000 -0500
++++ src/webkit-efl-svn-r127150/Source/WebCore/icu/unicode/umachine.h	2013-07-30 02:13:16.182327900 -0500
 @@ -298,7 +298,7 @@ typedef int8_t UBool;
  #       if (U_SIZEOF_WCHAR_T==4)
  #           define U_WCHAR_IS_UTF32
@@ -169,9 +167,9 @@
  #       define U_WCHAR_IS_UTF16    
  #   endif
  #endif
---- origsrc/webkit-efl-svn-r98964/Source/WebCore/plugins/PluginDatabase.cpp	2011-11-01 10:39:01.000000000 -0500
-+++ src/webkit-efl-svn-r98964/Source/WebCore/plugins/PluginDatabase.cpp	2012-09-11 19:27:36.000000000 -0500
-@@ -445,7 +445,9 @@ void PluginDatabase::getPluginPathsInDir
+--- origsrc/webkit-efl-svn-r127150/Source/WebCore/plugins/PluginDatabase.cpp	2012-08-30 13:44:46.000000000 -0500
++++ src/webkit-efl-svn-r127150/Source/WebCore/plugins/PluginDatabase.cpp	2013-07-30 02:13:46.586066900 -0500
+@@ -451,7 +451,9 @@ void PluginDatabase::getPluginPathsInDir
      // FIXME: This should be a case insensitive set.
      HashSet<String> uniqueFilenames;
  
@@ -182,22 +180,37 @@
      String fileNameFilter("*.so");
  #else
      String fileNameFilter("");
---- origsrc/webkit-efl-svn-r98964/Source/WebKit/CMakeLists.txt	2011-11-01 10:39:02.000000000 -0500
-+++ src/webkit-efl-svn-r98964/Source/WebKit/CMakeLists.txt	2012-09-12 04:02:30.714300700 -0500
-@@ -81,4 +81,4 @@ IF (VERSION_SCRIPT)
+--- origsrc/webkit-efl-svn-r127150/Source/WebKit/CMakeLists.txt	2012-08-30 13:44:46.000000000 -0500
++++ src/webkit-efl-svn-r127150/Source/WebKit/CMakeLists.txt	2013-07-30 02:15:43.364746300 -0500
+@@ -95,4 +95,6 @@ IF (VERSION_SCRIPT)
  ENDIF ()
  
  SET_TARGET_PROPERTIES(${WebKit_LIBRARY_NAME} PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION ${PROJECT_VERSION_MAJOR})
--INSTALL(TARGETS ${WebKit_LIBRARY_NAME} DESTINATION lib)
-+INSTALL(TARGETS ${WebKit_LIBRARY_NAME} LIBRARY DESTINATION lib RUNTIME DESTINATION bin ARCHIVE DESTINATION lib)
---- origsrc/webkit-efl-svn-r98964/Source/cmake/WebKitHelpers.cmake	2011-11-01 10:39:02.000000000 -0500
-+++ src/webkit-efl-svn-r98964/Source/cmake/WebKitHelpers.cmake	2012-09-11 19:30:15.159639400 -0500
-@@ -14,7 +14,7 @@ MACRO(WEBKIT_SET_EXTRA_COMPILER_FLAGS _t
+-INSTALL(TARGETS ${WebKit_LIBRARY_NAME} DESTINATION "${LIB_INSTALL_DIR}")
++INSTALL(TARGETS ${WebKit_LIBRARY_NAME} LIBRARY DESTINATION "${LIB_INSTALL_DIR}"
++                                       RUNTIME DESTINATION bin
++                                       ARCHIVE DESTINATION "${LIB_INSTALL_DIR}")
+--- origsrc/webkit-efl-svn-r127150/Source/cmake/WebKitHelpers.cmake	2012-08-30 13:44:46.000000000 -0500
++++ src/webkit-efl-svn-r127150/Source/cmake/WebKitHelpers.cmake	2013-07-30 02:14:56.332056200 -0500
+@@ -21,12 +21,12 @@ MACRO(WEBKIT_SET_EXTRA_COMPILER_FLAGS _t
          SET(OLD_COMPILE_FLAGS "${OLD_COMPILE_FLAGS} -fno-tree-sra")
      ENDIF ()
  
 -    IF (NOT SHARED_CORE)
 +    IF (NOT SHARED_CORE AND NOT CYGWIN)
-         SET(OLD_COMPILE_FLAGS "-fPIC -fvisibility=hidden ${OLD_COMPILE_FLAGS}")
+         SET(OLD_COMPILE_FLAGS "-fvisibility=hidden ${OLD_COMPILE_FLAGS}")
      ENDIF ()
  
+     GET_TARGET_PROPERTY(TARGET_TYPE ${_target} TYPE)
+-    IF (${TARGET_TYPE} STREQUAL "STATIC_LIBRARY") # -fPIC is automatically added to shared libraries
++    IF (${TARGET_TYPE} STREQUAL "STATIC_LIBRARY" AND NOT CYGWIN) # -fPIC is automatically added to shared libraries
+         SET(OLD_COMPILE_FLAGS "-fPIC ${OLD_COMPILE_FLAGS}")
+     ENDIF ()
+ 
+--- origsrc/webkit-efl-svn-r127150/Tools/DumpRenderTree/TestNetscapePlugIn/CMakeLists.txt	2012-08-30 13:44:46.000000000 -0500
++++ src/webkit-efl-svn-r127150/Tools/DumpRenderTree/TestNetscapePlugIn/CMakeLists.txt	2013-07-30 04:16:10.414109900 -0500
+@@ -33,3 +33,4 @@ SET(WebKitTestNetscapePlugin_INCLUDE_DIR
+ INCLUDE_DIRECTORIES(${WebKitTestNetscapePlugin_INCLUDE_DIRECTORIES})
+ 
+ ADD_LIBRARY(TestNetscapePlugin SHARED ${WebKitTestNetscapePlugin_SOURCES})
++TARGET_LINK_LIBRARIES(TestNetscapePlugin X11)

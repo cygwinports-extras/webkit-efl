@@ -1,0 +1,18 @@
+--- origsrc/webkit-efl-svn-r127150/Source/cmake/FindEFL.cmake	2012-08-30 13:44:46.000000000 -0500
++++ src/webkit-efl-svn-r127150/Source/cmake/FindEFL.cmake	2013-07-30 04:03:12.133594800 -0500
+@@ -10,15 +10,12 @@ PKG_CHECK_MODULES (EFLDEPS REQUIRED
+   ecore-file>=1.0.0
+   ecore-evas>=1.0.999.59763
+   edje>=1.0.0
+-  eukit>=1.1.0
+   edbus>=1.1.0
+   ecore-input>=1.0.0
+-  eeze>=1.2.99
+   efreet>=1.0.0)
+ PKG_CHECK_MODULES (EINA REQUIRED eina>=1.2.0)
+ PKG_CHECK_MODULES (ECORE_X ecore-x>=1.0.0)
+ PKG_CHECK_MODULES (EVAS REQUIRED evas>=1.0.0)
+-PKG_CHECK_MODULES (EUKIT REQUIRED eukit>=1.1.0)
+ PKG_CHECK_MODULES (EDBUS REQUIRED edbus>=1.1.0)
+ PKG_CHECK_MODULES (EFREET REQUIRED efreet>=1.0.0)
+ 
