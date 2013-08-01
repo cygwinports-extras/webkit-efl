@@ -16,6 +16,8 @@ PATCH_URI="
 	01-os-cygwin.patch
 	02-no-udev.patch
 	03-harfbuzz-utf16.patch
+	04-r127179.patch
+	05-r147640.patch
 "
 
 PKG_NAMES="libewebkit0 libewebkit-devel"
@@ -30,6 +32,7 @@ CYGCMAKE_ARGS="
 	-DPORT=Efl
 	-DENABLE_BATTERY_STATUS=OFF
 	-DENABLE_GAMEPAD=OFF
+	-DENABLE_JIT=OFF
 	-DENABLE_NETWORK_INFO=OFF
 	-DENABLE_WEBKIT2=OFF
 "
